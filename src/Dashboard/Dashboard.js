@@ -1,42 +1,53 @@
-import Stations from '../Stations/Stations';
+import Map from '../Stations/Map';
 import './dashboard.css';
 import React, { useEffect, useState } from "react";
 
+console.log("Backend URI: ", process.env.REACT_APP_BACKEND_URI);
+const backendUri = process.env.REACT_APP_BACKEND_URI || 'http://localhost:8080';
 
 export default function Dashboard() {
-
-  const [fetchedStations, setState] = useState(undefined);
+  const [fetchedStations, setFetchedStations] = useState(undefined);
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
-    fetch('http://localhost:5000/stazioni', {
-      // mode: 'no-cors',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    },
-    ).then(response => {
-      if (response.ok) {
-        response.json().then(json => {
-          console.log(json);
-          setState(fetchedStations)
+    const fetchStations = async () => {
+      try {
+        const response = await fetch(`${backendUri}/stations`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
         });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const stationsData = await response.json();
+        setFetchedStations(stationsData);
+      } catch (error) {
+        console.error('Fetch error: ', error);
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
       }
-    }).catch(err => {
-      console.log(err)
-      setHasError(true)
-    })
-  })
+    };
+
+    fetchStations();
+  }, []); // Chiamata API eseguita solo una volta al caricamento
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   if (hasError) {
-    return <p>Error</p>
+    return <p>Error fetching stations</p>;
   }
 
   return (
     <div className='dashboard'>
-      <Stations listOfStations={fetchedStations}></Stations>
+      <Map listOfStations={fetchedStations}></Map>
     </div>
-  )
+  );
 }
