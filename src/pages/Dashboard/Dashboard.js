@@ -1,8 +1,7 @@
-import Map from '../Stations/Map';
+import Map from '../Map/Map';
 import './dashboard.css';
 import React, { useEffect, useState } from "react";
 
-console.log("Backend URI: ", process.env.REACT_APP_BACKEND_URI);
 const backendUri = process.env.REACT_APP_BACKEND_URI || 'http://localhost:8080';
 
 export default function Dashboard() {
@@ -47,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <div className='dashboard'>
-      <Map listOfStations={fetchedStations}></Map>
+      <p>DashBoard</p>
     </div>
   );
 }

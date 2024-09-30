@@ -1,8 +1,0 @@
-.stations{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-    min-width: 600px;
-    min-height: 400px;
-}
