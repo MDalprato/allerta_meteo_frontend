@@ -16,14 +16,13 @@ const iconPerson = new L.Icon({
   shadowSize: null,
   shadowAnchor: null,
   iconSize: new L.Point(20, 30),
-  className: 'leaflet-div-icon'
+  className: 'leaflet-div-icon',
+  popupAnchor: [0, 0]
 });
 
 export { iconPerson };
 
-
-
-export default function Map(props) {
+export default function Map() {
 
   const [fetchedStations, setFetchedStations] = useState(undefined);
   const [hasError, setHasError] = useState(false);
@@ -31,6 +30,9 @@ export default function Map(props) {
 
   useEffect(() => {
     const fetchStations = async () => {
+
+      setIsLoading(true);
+
       try {
         const response = await fetch(`${backendUri}/stations`, {
           method: 'GET',
@@ -45,9 +47,13 @@ export default function Map(props) {
 
         const stationsData = await response.json();
         setFetchedStations(stationsData);
+        setIsLoading(false);
+
       } catch (error) {
         console.error('Fetch error: ', error);
         setHasError(true);
+        setIsLoading(false);
+
       } finally {
         setIsLoading(false);
       }
@@ -61,9 +67,21 @@ export default function Map(props) {
     return <p>Loading...</p>;
   }
 
+  if (hasError) {
+    return <p>Error fetching stations</p>;
+  }
+
+  if (isLoading) {
+    return <p>Loading ...</p>;
+  }
+
   const firstStation = fetchedStations[0];
   const position = [firstStation.lat / 100000, firstStation.lon / 100000];
 
+  const handleShowDetails = (station) => {
+    console.log('show details');
+    console.log(station)
+  }
 
   return (
     <MapContainer className='map' center={position} zoom={9} scrollWheelZoom={false}>
@@ -79,12 +97,23 @@ export default function Map(props) {
 
         return (
           <Marker
-            key={index}
             position={[new_lat, new_lon]}
             icon={iconPerson}
+            key={index}
+            eventHandlers={{
+              click: (e) => {
+                console.log('marker clicked', e)
+                handleShowDetails(station)
+              }
+            }}
           >
             <Popup>
-              <p>ciao</p>
+              <ul>
+                <li>Nome: {station.nomestaz}</li>
+                <li>ID: {station.idstazione}</li>
+                <li>Latitudine: {station.lat}</li>
+                <li>Longitudine: {station.lon}</li>
+              </ul>
             </Popup>
           </Marker>
         )

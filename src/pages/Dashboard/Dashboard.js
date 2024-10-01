@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <div className='dashboard'>
-      <p>DashBoard</p>
+      <p>THIS IS THE DASHBOARD</p>
     </div>
   );
 }
