@@ -3,14 +3,14 @@ import './Letture.css';
 
 const backendUri = import.meta.env.VITE_BACKEND_ENDPOINT;
 
-
 const Letture = () => {
   const [time, setTime] = useState('1h');
   const [readings, setReadings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    
     fetch(`${backendUri}/readings?time=${time}`)
       .then(response => response.json())
       .then(data => setReadings(data))
@@ -20,6 +20,24 @@ const Letture = () => {
   const filteredReadings = readings.filter(reading =>
     reading.nomestaz.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentReadings = filteredReadings.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredReadings.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="Letture">
@@ -43,6 +61,9 @@ const Letture = () => {
           placeholder="Search station name..."
         />
       </div>
+      <div>
+        <p>Number of readings displayed: {filteredReadings.length}</p>
+      </div>
       <table id="readingsTable">
         <thead>
           <tr>
@@ -54,7 +75,7 @@ const Letture = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredReadings.map((reading) => (
+          {currentReadings.map((reading) => (
             <tr key={reading._id.$oid}>
               <td>{new Date(reading.timestamp).toLocaleString()}</td>
               <td>{reading.nomestaz}</td>
@@ -65,6 +86,15 @@ const Letture = () => {
           ))}
         </tbody>
       </table>
+      <div className="pagination">
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span> Page {currentPage} of {totalPages} </span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
     </div>
   );
 };

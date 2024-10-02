@@ -3,112 +3,82 @@ import './Stazioni.css';
 
 const backendUri = import.meta.env.VITE_BACKEND_ENDPOINT;
 
-
 const Stazioni = () => {
   const [stations, setStations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: 'nomestaz', direction: 'ascending' });
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetch(`${backendUri}/stations`)
       .then(response => response.json())
       .then(data => setStations(data))
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Error fetching stations:', error));
   }, []);
 
-  const sortedStations = [...stations].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === 'ascending' ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === 'ascending' ? 1 : -1;
-    }
-    return 0;
-  });
-
-  const filteredStations = sortedStations.filter(station =>
+  const filteredStations = stations.filter(station =>
     station.nomestaz.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStations.slice(indexOfFirstItem, indexOfLastItem);
+  const currentStations = filteredStations.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
 
-  const requestSort = key => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
-    setSortConfig({ key, direction });
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const renderPagination = () => {
-    const pageNumbers = [];
-    const maxPagesToShow = 5;
-
-    if (totalPages <= maxPagesToShow) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        pageNumbers.push(1, 2, 3, 4, '...', totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pageNumbers.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
-      } else {
-        pageNumbers.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
-      }
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
-
-    return pageNumbers.map((number, index) => (
-      <button
-        key={index}
-        onClick={() => number !== '...' && handlePageChange(number)}
-        className={currentPage === number ? 'active' : ''}
-        disabled={number === '...'}
-      >
-        {number}
-      </button>
-    ));
   };
 
   return (
-    <div className="container">
-      <input
-        type="text"
-        className="search-bar"
-        placeholder="Cerca..."
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-      <table className="table">
+    <div className="Stazioni">
+      <div>
+        <label htmlFor="searchInput">Search by Station Name:</label>
+        <input
+          id="searchInput"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search station name..."
+        />
+      </div>
+      <div>
+        <p>Number of stations displayed: {filteredStations.length}</p>
+      </div>
+      <table id="readingsTable">
         <thead>
           <tr>
-            <th onClick={() => requestSort('nomestaz')}>Nome Stazione</th>
-            <th onClick={() => requestSort('lat')}>Latitudine</th>
-            <th onClick={() => requestSort('lon')}>Longitudine</th>
+            <th>Nome Stazione</th>
+            <th>Lon</th>
+            <th>Lat</th>
           </tr>
         </thead>
         <tbody>
-          {currentItems.map(station => (
+          {currentStations.map((station) => (
             <tr key={station._id}>
               <td>{station.nomestaz}</td>
-              <td>{station.lat}</td>
               <td>{station.lon}</td>
+              <td>{station.lat}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="pagination">
-        {renderPagination()}
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span> Page {currentPage} of {totalPages} </span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
       </div>
     </div>
   );
