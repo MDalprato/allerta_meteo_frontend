@@ -18,7 +18,7 @@ const Letture = () => {
   }, [time]);
 
   const filteredReadings = readings.filter(reading =>
-    reading.nomestaz.toLowerCase().includes(searchTerm.toLowerCase())
+    reading.nomestaz && reading.nomestaz.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -40,7 +40,7 @@ const Letture = () => {
   };
 
   return (
-    <div className="Letture">
+    <div className="letture">
       <div>
         <label htmlFor="timeSelect">Select Time:</label>
         <select id="timeSelect" value={time} onChange={(e) => setTime(e.target.value)}>
@@ -72,18 +72,41 @@ const Letture = () => {
             <th>Lon</th>
             <th>Lat</th>
             <th>Value</th>
+            <th>Soglia 1</th>
+            <th>Soglia 2</th>
+            <th>Soglia 3</th>
+            <th>Percentuale Riempimento</th>
           </tr>
         </thead>
         <tbody>
-          {currentReadings.map((reading) => (
-            <tr key={reading._id.$oid}>
-              <td>{new Date(reading.timestamp).toLocaleString()}</td>
-              <td>{reading.nomestaz}</td>
-              <td>{reading.lon}</td>
-              <td>{reading.lat}</td>
-              <td>{reading.value}</td>
-            </tr>
-          ))}
+          {currentReadings.map((reading) => {
+            const percentualeRiempimento = (reading.value / reading.soglia3) * 100;
+            let rowColor = '';
+
+            if (isFinite(percentualeRiempimento)) {
+              if (reading.value > reading.soglia3) {
+                rowColor = '#ffcccc'; // Soft red
+              } else if (reading.value > reading.soglia2) {
+                rowColor = '#ffe5b4'; // Soft orange
+              } else if (reading.value > reading.soglia1) {
+                rowColor = '#ccffcc'; // Soft green
+              }
+            }
+
+            return (
+              <tr key={reading._id.$oid} style={{ backgroundColor: rowColor }}>
+                <td>{new Date(reading.timestamp).toLocaleString()}</td>
+                <td>{reading.nomestaz}</td>
+                <td>{reading.lon}</td>
+                <td>{reading.lat}</td>
+                <td>{reading.value}</td>
+                <td>{reading.soglia1}</td>
+                <td>{reading.soglia2}</td>
+                <td>{reading.soglia3}</td>
+                <td>{isFinite(percentualeRiempimento) ? `${percentualeRiempimento.toFixed(2)}%` : 'N/A'}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <div className="pagination">

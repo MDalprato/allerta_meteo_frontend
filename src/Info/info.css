@@ -1,4 +1,6 @@
-.container {
+.info {
+
+  .container {
     font-family: Arial, sans-serif;
     max-width: 600px;
     margin: 0 auto;
@@ -7,26 +9,28 @@
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
   }
-  
+
   .heading {
     color: #333;
     margin-bottom: 20px;
   }
-  
+
   .paragraph {
     color: #666;
     line-height: 1.6;
     margin-bottom: 20px;
   }
-  
+
   .link {
     color: #007BFF;
     text-decoration: none;
   }
-  
+
   .footer {
     margin-top: 20px;
     color: #999;
     font-size: 14px;
   }
+}

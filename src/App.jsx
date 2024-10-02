@@ -6,6 +6,7 @@ import Mappa from './Mappa/Mappa';
 import Info from './Info/Info';
 import Stazioni from './Stazioni/Stazioni';
 import Letture from './Letture/Letture';
+import Grafico from './Grafico/Grafico';
 
 // Vari componenti per i contenuti
 const Home = () => <div>Benvenuto nella pagina Home</div>;
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/mappa" element={<Mappa />} />
             <Route path="/letture" element={<Letture />} />
             <Route path="/stazioni" element={<Stazioni />} />
+            <Route path="/grafico" element={<Grafico />} />
             <Route path="/info" element={<Info />} />
           </Routes>
         </div>

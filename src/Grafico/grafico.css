@@ -1,0 +1,25 @@
+/* grafico.css */
+.grafico {
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+
+  .select-container {
+    margin-bottom: 20px;
+  }
+
+  select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .chart-container {
+    width: 80%;
+    max-width: 800px;
+  }
+}
