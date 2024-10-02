@@ -1,5 +1,5 @@
 # Usa un'immagine di base di Node.js
-FROM node:14
+FROM node:18
 
 # Imposta la directory di lavoro
 WORKDIR /app
@@ -27,3 +27,9 @@ EXPOSE 80
 
 # Avvia Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+# Costruisci l'immagine Docker
+# docker build -t allerta-meteo-frontend .
+
+# Esempio:
+# docker build -t allerta-meteo-frontend .
