@@ -3,39 +3,63 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './mappa.css';
-import markerIcon from './marker-icon-2x.png';
+import greenIconUrl from './marker-icon-green.png';
+import orangeIconUrl from './marker-icon-orange.png';
+import redIconUrl from './marker-icon-red.png';
 
 const backendUri = import.meta.env.VITE_BACKEND_ENDPOINT;
 
-const iconPerson = new L.Icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon,
-  iconAnchor: null,
-  popupAnchor: null,
-  shadowUrl: null,
-  shadowSize: null,
-  shadowAnchor: null,
-  iconSize: new L.Point(20, 30),
+const greenIcon = new L.Icon({
+  iconUrl: greenIconUrl,
+  iconRetinaUrl: greenIconUrl,
+  iconSize: new L.Point(30, 30),
   className: 'leaflet-div-icon',
   popupAnchor: [0, 0]
 });
 
+const orangeIcon = new L.Icon({
+  iconUrl: orangeIconUrl,
+  iconRetinaUrl: orangeIconUrl,
+  iconSize: new L.Point(30, 30),
+  className: 'leaflet-div-icon',
+  popupAnchor: [0, 0]
+});
 
-export { iconPerson };
+const redIcon = new L.Icon({
+  iconUrl: redIconUrl,
+  iconRetinaUrl: redIconUrl,
+  iconSize: new L.Point(30, 30),
+  className: 'leaflet-div-icon',
+  popupAnchor: [0, 0]
+});
+
+const getIconByValue = (station) => {
+  if (station.soglia1 == 0 && station.soglia2 == 0 && station.soglia3 == 0) {
+    // altrimenti è ingestibile
+    return greenIcon;
+  }
+
+  if (station.value > station.soglia3) {
+    return redIcon;
+  } else if (station.value > station.soglia2) {
+    return orangeIcon;
+  } else if (station.value > station.soglia1) {
+    return greenIcon;
+  }
+  return greenIcon; // Default icon
+};
 
 export default function Mappa() {
-
   const [fetchedStations, setFetchedStations] = useState(undefined);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStations = async () => {
-
       setIsLoading(true);
 
       try {
-        const response = await fetch(`${backendUri}/stations`, {
+        const response = await fetch(`${backendUri}/readings`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -49,12 +73,10 @@ export default function Mappa() {
         const stationsData = await response.json();
         setFetchedStations(stationsData);
         setIsLoading(false);
-
       } catch (error) {
         console.error('Fetch error: ', error);
         setHasError(true);
         setIsLoading(false);
-
       } finally {
         setIsLoading(false);
       }
@@ -62,7 +84,6 @@ export default function Mappa() {
 
     fetchStations();
   }, []); // Chiamata API eseguita solo una volta al caricamento
-
 
   if (!fetchedStations) {
     return <p>Loading...</p>;
@@ -77,12 +98,12 @@ export default function Mappa() {
   }
 
   const firstStation = fetchedStations[0];
-  const position = [firstStation.lat , firstStation.lon ];
+  const position = [firstStation.lat, firstStation.lon];
 
   const handleShowDetails = (station) => {
     console.log('show details');
-    console.log(station)
-  }
+    console.log(station);
+  };
 
   return (
     <MapContainer className='map' center={position} zoom={9} scrollWheelZoom={false}>
@@ -92,17 +113,18 @@ export default function Mappa() {
       />
 
       {fetchedStations.map((station, index) => {
+        const icon = getIconByValue(station);
 
         return (
           <Marker
             position={[station.lat, station.lon]}
-            icon={iconPerson}
+            icon={icon}
             key={index}
             eventHandlers={{
               click: (e) => {
-                console.log('marker clicked', e)
-                handleShowDetails(station)
-              }
+                console.log('marker clicked', e);
+                handleShowDetails(station);
+              },
             }}
           >
             <Popup>
@@ -111,10 +133,11 @@ export default function Mappa() {
                 <li>ID: {station.idstazione}</li>
                 <li>Latitudine: {station.lat}</li>
                 <li>Longitudine: {station.lon}</li>
+                <li>Valore: {station.value}</li>
               </ul>
             </Popup>
           </Marker>
-        )
+        );
       })}
     </MapContainer>
   );

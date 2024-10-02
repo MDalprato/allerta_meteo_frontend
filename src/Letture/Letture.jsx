@@ -44,6 +44,7 @@ const Letture = () => {
       <div>
         <label htmlFor="timeSelect">Select Time:</label>
         <select id="timeSelect" value={time} onChange={(e) => setTime(e.target.value)}>
+          <option value="">Ultime letture</option>
           <option value="1h">1h</option>
           <option value="2h">2h</option>
           <option value="12h">12h</option>
