@@ -20,36 +20,36 @@ const Sidebar = () => {
           </button>
         </div>
         <ul>
-          <li>
-            <Link to="/">
+          <Link to="/">
+            <li>
               <FontAwesomeIcon icon={faHome} />
               {isExpanded && <span>Home</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/mappa">
+            </li>
+          </Link>
+          <Link to="/mappa">
+            <li>
               <FontAwesomeIcon icon={faMap} />
               {isExpanded && <span>Mappa</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/letture">
+            </li>
+          </Link>
+          <Link to="/letture">
+            <li>
               <FontAwesomeIcon icon={faBook} />
               {isExpanded && <span>Letture</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/stazioni">
+            </li>
+          </Link>
+          <Link to="/stazioni">
+            <li>
               <FontAwesomeIcon icon={faBuilding} />
               {isExpanded && <span>Stazioni</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/info">
+            </li>
+          </Link>
+          <Link to="/info">
+            <li>
               <FontAwesomeIcon icon={faInfoCircle} />
               {isExpanded && <span>Info</span>}
-            </Link>
-          </li>
+            </li>
+          </Link>
         </ul>
       </div>
     );
