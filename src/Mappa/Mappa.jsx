@@ -6,7 +6,6 @@ import './mappa.css';
 import markerIcon from './marker-icon-2x.png';
 
 const backendUri = import.meta.env.VITE_BACKEND_ENDPOINT;
-console.log(backendUri);
 
 const iconPerson = new L.Icon({
   iconUrl: markerIcon,

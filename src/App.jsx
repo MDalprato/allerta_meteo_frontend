@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css'; // Per lo stile
 import Sidebar from './Sidebar/Sidebar';
 import Mappa from './Mappa/Mappa';
+import Info from './Info/Info';
+import Stazioni from './Stazioni/Stazioni';
 
 // Vari componenti per i contenuti
 const Home = () => <div>Benvenuto nella pagina Home</div>;
 const Letture = () => <div>Dati delle letture meteorologiche</div>;
-const Stazioni = () => <div>Elenco delle stazioni meteorologiche</div>;
-const Info = () => <div>Informazioni sul sistema</div>;
 
 // Componente principale App con Router
 const App = () => {
