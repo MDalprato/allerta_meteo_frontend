@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Stazioni.css';
 
+const backendUri = import.meta.env.VITE_BACKEND_ENDPOINT;
+
+
 const Stazioni = () => {
   const [stations, setStations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,7 +12,7 @@ const Stazioni = () => {
   const itemsPerPage = 20;
 
   useEffect(() => {
-    fetch('http://localhost:8080/stations')
+    fetch(`${backendUri}/stations`)
       .then(response => response.json())
       .then(data => setStations(data))
       .catch(error => console.error('Error fetching data:', error));

@@ -5,10 +5,10 @@ import Sidebar from './Sidebar/Sidebar';
 import Mappa from './Mappa/Mappa';
 import Info from './Info/Info';
 import Stazioni from './Stazioni/Stazioni';
+import Letture from './Letture/Letture';
 
 // Vari componenti per i contenuti
 const Home = () => <div>Benvenuto nella pagina Home</div>;
-const Letture = () => <div>Dati delle letture meteorologiche</div>;
 
 // Componente principale App con Router
 const App = () => {
