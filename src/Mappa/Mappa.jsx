@@ -77,7 +77,7 @@ export default function Mappa() {
   }
 
   const firstStation = fetchedStations[0];
-  const position = [firstStation.lat / 100000, firstStation.lon / 100000];
+  const position = [firstStation.lat , firstStation.lon ];
 
   const handleShowDetails = (station) => {
     console.log('show details');
@@ -93,12 +93,9 @@ export default function Mappa() {
 
       {fetchedStations.map((station, index) => {
 
-        const new_lat = station.lat / 100000;
-        const new_lon = station.lon / 100000;
-
         return (
           <Marker
-            position={[new_lat, new_lon]}
+            position={[station.lat, station.lon]}
             icon={iconPerson}
             key={index}
             eventHandlers={{
