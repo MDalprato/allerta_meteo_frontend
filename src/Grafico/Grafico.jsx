@@ -29,6 +29,7 @@ const Grafico = () => {
     const [stations, setStations] = useState([]);
     const [selectedStation, setSelectedStation] = useState('');
     const [readings, setReadings] = useState([]);
+    const [thresholds, setThresholds] = useState({ soglia1: 0, soglia2: 0, soglia3: 0 });
 
     useEffect(() => {
         // Fetch the list of stations
@@ -41,6 +42,15 @@ const Grafico = () => {
     const handleStationChange = (event) => {
         const stationId = event.target.value;
         setSelectedStation(stationId);
+
+        const selectedStationData = stations.find(station => station.idstazione === stationId);
+        if (selectedStationData) {
+            setThresholds({
+                soglia1: selectedStationData.soglia1 || 0,
+                soglia2: selectedStationData.soglia2 || 0,
+                soglia3: selectedStationData.soglia3 || 0,
+            });
+        }
 
         // Fetch readings for the selected station
         fetch(`${backendUri}/get_readings_by_station_id?stationId=${stationId}`)
@@ -59,10 +69,29 @@ const Grafico = () => {
                 backgroundColor: 'rgba(75,192,192,0.4)',
                 borderColor: 'rgba(75,192,192,1)',
             },
+            {
+                label: 'Soglia 1',
+                data: readings.map(() => thresholds.soglia1),
+                fill: false,
+                borderColor: 'green',
+                borderDash: [10, 5],
+            },
+            {
+                label: 'Soglia 2',
+                data: readings.map(() => thresholds.soglia2),
+                fill: false,
+                borderColor: 'orange',
+                borderDash: [10, 5],
+            },
+            {
+                label: 'Soglia 3',
+                data: readings.map(() => thresholds.soglia3),
+                fill: false,
+                borderColor: 'red',
+                borderDash: [10, 5],
+            },
         ],
     };
-
-    console.log(chartData);
 
     return (
         <div className="grafico">
