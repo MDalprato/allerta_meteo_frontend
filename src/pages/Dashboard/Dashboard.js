@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 const backendUri = process.env.REACT_APP_BACKEND_URI || 'http://localhost:8080';
 
+console.log(backendUri)
 export default function Dashboard() {
   const [fetchedStations, setFetchedStations] = useState(undefined);
   const [hasError, setHasError] = useState(false);
