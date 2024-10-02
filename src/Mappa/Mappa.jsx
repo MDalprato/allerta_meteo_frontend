@@ -115,11 +115,14 @@ export default function Mappa() {
       {fetchedStations.map((station, index) => {
         const icon = getIconByValue(station);
 
+
+        
         return (
           <Marker
             position={[station.lat, station.lon]}
             icon={icon}
             key={index}
+            title={station.nomestaz}
             eventHandlers={{
               click: (e) => {
                 console.log('marker clicked', e);
